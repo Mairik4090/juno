@@ -28,48 +28,24 @@
     <div id="countdown"></div>
 
     <script>
-        // Set initial countdown time to 12 hours
-        const initialCountdownTime = 43200000;
+      // Countdown alle 12 Stunden (43200000 Millisekunden)
+      function updateCountdown() {
+        const now = new Date();
+        const nextMidnight = new Date(now);
+        nextMidnight.setHours(24, 0, 0, 0);
+        const timeRemaining = nextMidnight - now;
 
-        // Retrieve the last reset time from localStorage
-        let lastResetTime = localStorage.getItem('lastResetTime');
+        const hours = Math.floor(timeRemaining / 3600000);
+        const minutes = Math.floor((timeRemaining % 3600000) / 60000);
+        const seconds = Math.floor((timeRemaining % 60000) / 1000);
 
-        if (!lastResetTime) {
-            lastResetTime = Date.now();
-            localStorage.setItem('lastResetTime', lastResetTime);
-        }
+        document.getElementById(
+          "countdown"
+        ).textContent = `Coming Soon... ${hours}:${minutes}:${seconds}`;
+      }
 
-        // Update the countdown display
-        function updateCountdown() {
-            const now = Date.now();
-            const elapsed = now - lastResetTime;
-            const timeRemaining = initialCountdownTime - elapsed;
-
-            if (timeRemaining <= 0) {
-                document.getElementById('countdown').textContent = 'Coming Soon... 0:0:0';
-                return;
-            }
-
-            const hours = Math.floor(timeRemaining / 3600000);
-            const minutes = Math.floor((timeRemaining % 3600000) / 60000);
-            const seconds = Math.floor((timeRemaining % 60000) / 1000);
-
-            document.getElementById('countdown').textContent = `Coming Soon... ${hours}:${minutes}:${seconds}`;
-        }
-
-        // Function to reset the countdown
-        function resetCountdown() {
-            lastResetTime = Date.now();
-            localStorage.setItem('lastResetTime', lastResetTime);
-            updateCountdown();
-        }
-
-        // Initial countdown update
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
-
-        // Make the resetCountdown function available in the console
-        window.resetCountdown = resetCountdown;
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
     </script>
   </body>
 </html>
