@@ -67,6 +67,10 @@
 
     // Initialisierung des Countdowns bei Seitenladen
     window.onload = function() {
+      const targetTime = localStorage.getItem('targetTime');
+      if (!targetTime) {
+        resetCountdown();
+      }
       updateCountdown();
       setInterval(updateCountdown, 1000); // Update jede Sekunde
     }
