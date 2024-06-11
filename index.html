@@ -28,48 +28,48 @@
     <div id="countdown"></div>
 
     <script>
-      // Set initial countdown time to 12 hours
-        const initialCountdownTime = 43200000;
+      // Funktion zum Formatieren der Zeit als hh:mm:ss
+    function formatTime(ms) {
+      const totalSeconds = Math.floor(ms / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
 
-        // Retrieve the last reset time from localStorage
-        let lastResetTime = localStorage.getItem('lastResetTime');
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
 
-        if (!lastResetTime) {
-            lastResetTime = Date.now();
-            localStorage.setItem('lastResetTime', lastResetTime);
+    // Funktion zum Update des Countdowns
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const targetTime = localStorage.getItem('targetTime');
+
+      if (targetTime) {
+        const timeRemaining = targetTime - now;
+
+        if (timeRemaining > 0) {
+          document.getElementById('countdown').textContent = `Coming Soon... ${formatTime(timeRemaining)}`;
+        } else {
+          document.getElementById('countdown').textContent = 'Countdown abgeschlossen!';
         }
+      } else {
+        document.getElementById('countdown').textContent = 'Countdown nicht gesetzt!';
+      }
+    }
 
-        // Update the countdown display
-        function updateCountdown() {
-            const now = Date.now();
-            const elapsed = now - lastResetTime;
-            const timeRemaining = initialCountdownTime - elapsed;
+    // Funktion zum Zurücksetzen des Countdowns
+    function resetCountdown() {
+      const now = new Date().getTime();
+      const twelveHours = 43200000; // 12 Stunden in Millisekunden
+      const newTargetTime = now + twelveHours;
+      localStorage.setItem('targetTime', newTargetTime);
+      updateCountdown();
+    }
 
-            if (timeRemaining <= 0) {
-                document.getElementById('countdown').textContent = 'Coming Soon... 0:0:0';
-                return;
-            }
-
-            const hours = Math.floor(timeRemaining / 3600000);
-            const minutes = Math.floor((timeRemaining % 3600000) / 60000);
-            const seconds = Math.floor((timeRemaining % 60000) / 1000);
-
-            document.getElementById('countdown').textContent = `Coming Soon... ${hours}:${minutes}:${seconds}`;
-        }
-
-        // Function to reset the countdown
-        function resetCountdown() {
-            lastResetTime = Date.now();
-            localStorage.setItem('lastResetTime', lastResetTime);
-            updateCountdown();
-        }
-
-        // Initial countdown update
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
-
-        // Make the resetCountdown function available in the console
-        window.resetCountdown = resetCountdown;
+    // Initialisierung des Countdowns bei Seitenladen
+    window.onload = function() {
+      updateCountdown();
+      setInterval(updateCountdown, 1000); // Update jede Sekunde
+    }
     </script>
   </body>
 </html>
